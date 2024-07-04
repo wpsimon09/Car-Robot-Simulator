@@ -1,12 +1,134 @@
-import * as THREE from 'three'
+import * as THREE from 'three';
+import gsap from 'gsap';
 
-export default class Car{
-    
-    public init(){
-    
+export default class Car {
+    private car: THREE.Mesh;
+    private _orders: String[];
+    private _rotatingRight: boolean;
+    private _targetRotation: number;
+    private _orderStarted: boolean;
+    private _duration: number;
+    private _lastTime: number;
+    private _currentTime: number;
+    private _deltaTime: number;
+    private _shouldMove: boolean;
+    private currentOrder: number;
+    private _shouldSetTimeout: boolean
+
+    public constructor(scene: THREE.Scene) {
+        const geometry = new THREE.BoxGeometry(0.5, 1); // Adjusted depth to make it a box
+        const material = new THREE.MeshPhysicalMaterial({ color: THREE.Color.NAMES.aqua });
+        this.car = new THREE.Mesh(geometry, material);
+        let degree = 90;
+        this.car.rotation.y = 0;
+        this._duration = 2000;
+        scene.add(this.car);
+        this._rotatingRight = true
+        this._targetRotation = ((Math.PI * degree) / 180);
+        this._orderStarted = true;
+
+        this._deltaTime = 0
+        this._currentTime = 0
+        this._lastTime = 0
+        this._shouldMove = true
+        this.currentOrder = 0
+        this._shouldSetTimeout = true;
+
     }
 
-    public update(){
+    public init() {
+        // Initialize any additional components or settings
+    }
+
+    public update(time: number) {
+        if (time != undefined) {
+            this._currentTime = time;
+            this._deltaTime = this._currentTime - this._lastTime
+            this._lastTime = time
+            this._duration -= this._deltaTime;
+        }
+
+
+        this.translateToOrders(this._orders)
+    }
+
+    public setOrders(orders: String[]) {
+        this._orders = orders;
+        console.log(this._orders)
+    }
+
+    private translateToOrders(orders: String[]) {
+        this._duration -= this._deltaTime;
+        if (this._duration < 0) {
+            this._duration = 2000;
+            this._shouldMove = false
+            if (this._shouldSetTimeout) {
+                setTimeout(() => {
+                    this._shouldMove = true
+                }, 50)
+                this.currentOrder += 1
+            }
+        } else if (this._shouldMove) {
+            this._shouldSetTimeout = true
+            this.selectOrder(this._orders[this.currentOrder])
+        }
+    }
+
+
+    private selectOrder(order) {
+
+        switch (order) {
+            case "left":
+                this.rotate90Degrees("left")
+                break;
+            case "right":
+                this.rotate90Degrees("right")
+                break;
+            case "forward":
+                this.forward(); // Call forward when "go forward" is in orders
+                break;
+            case "backward":
+                this.backward()
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
+    private forward() {
+
+        const currentRotation = -this.car.rotation.y;
+
+        const speed = 0.01;
+        const dx = Math.sin(currentRotation) * speed;
+        const dz = Math.cos(currentRotation) * speed;
+
+        this.car.position.x += dx;
+        this.car.position.z -= dz;
+    }
+
+
+    private backward() {
+        const currentRotation = -this.car.rotation.y;
+        const speed = 0.01;
+        const dx = -Math.sin(currentRotation) * speed; // Reverse direction compared to forward()
+        const dz = -Math.cos(currentRotation) * speed; // Reverse direction compared to forward()
+
+        this.car.position.x += dx;
+        this.car.position.z -= dz;
+    }
+
+    private rotate90Degrees(direction: 'left' | 'right') {
+        
+        if(direction=="left"){
+            gsap.to(this.car.rotation,{duration:0.5,y:this.car.rotation.y+ (this._targetRotation/9)})
+        }else if(direction=="right"){
+            gsap.to(this.car.rotation,{duration:0.5,y:this.car.rotation.y - (this._targetRotation/9)})
+
+        }
+        console.log(this.car.rotation.y)
 
     }
 }
