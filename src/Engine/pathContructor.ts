@@ -51,13 +51,10 @@ export default class PathConstructor{
 
     }
 
-    public processMouseMove(tempEndPoint: THREE.Vector3){
-        if(this._isConstructingLine)
-            this._tempLine.geometry = new THREE.BufferGeometry().setFromPoints([this._lineStart, tempEndPoint]);
-    }
-
-    public endLine(endPoint: THREE.Vector3){
-    
+    public processMouseMove(tempEndPoint: THREE.Vector3 ){
+        if(tempEndPoint != undefined)
+            if(this._isConstructingLine)
+                this._tempLine.geometry = new THREE.BufferGeometry().setFromPoints([this._lineStart, tempEndPoint]);
     }
 
 }

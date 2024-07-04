@@ -20,6 +20,7 @@ export default class Application {
     private _pathConstructor: PathConstructor
 
     private _isValidIntersection = false;
+    private _stratButton;
 
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
@@ -31,12 +32,14 @@ export default class Application {
 
         this._processMouseMove = this._processMouseMove.bind(this);
         this._processMouseClick = this._processMouseClick.bind(this);
+        this._start = this._start.bind(this);
+        
+        this._pathConstructor = new PathConstructor(this._scene);
+        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start)
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
 
-        this._pathConstructor = new PathConstructor(this._scene);
-    
     }
 
     public init(): void {
@@ -127,6 +130,10 @@ export default class Application {
         console.log("click")
         if(this._isValidIntersection)
             this._pathConstructor.processClickEvent(this._mousePointInWorld);
+    }
+
+    private _start(){
+        console.log("start");
     }
 
    private _setUpBox(){
