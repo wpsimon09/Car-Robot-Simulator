@@ -1,10 +1,41 @@
 import * as THREE from 'three'
+import gsap from 'gsap';
 
-export default class Car{
-    
-    public init(){
-    
+export default class Car {
+    private car: THREE.Mesh;
+    private _orders: String[];
+    private _rotatingRight: boolean;
+    private _targetRotation: number;
+    private _orderStarted: boolean;
+    private _duration: number;
+    private _lastTime: number;
+    private _currentTime: number;
+    private _deltaTime: number;
+    private _shouldMove: boolean;
+    private currentOrder: number;
+    private _shouldSetTimeout: boolean
+
+    public constructor(scene: THREE.Scene) {
+        const geometry = new THREE.BoxGeometry(0.5, 1); // Adjusted depth to make it a box
+        const material = new THREE.MeshPhysicalMaterial({ color: THREE.Color.NAMES.aqua });
+        this.car = new THREE.Mesh(geometry, material);
+        let degree = 90;
+        this.car.rotation.y = 0;
+        this._duration = 2000;
+        scene.add(this.car);
+        this._rotatingRight = true
+        this._targetRotation = ((Math.PI * degree) / 180);
+        this._orderStarted = true;
+
+        this._deltaTime = 0
+        this._currentTime = 0
+        this._lastTime = 0
+        this._shouldMove = true
+        this.currentOrder = 0
+        this._shouldSetTimeout = true;
+
     }
+
     public update(time: number) {
         if (time != undefined) {
             this._currentTime = time;
@@ -84,17 +115,16 @@ export default class Car{
         this.car.position.x += dx;
         this.car.position.z -= dz;
     }
-// teehee
+
     private rotate90Degrees(direction: 'left' | 'right') {
-        
-        if(direction=="left"){
-            gsap.to(this.car.rotation,{duration:0.5,y:this.car.rotation.y+ (this._targetRotation/9)})
-        }else if(direction=="right"){
-            gsap.to(this.car.rotation,{duration:0.5,y:this.car.rotation.y - (this._targetRotation/9)})
+
+        if (direction == "left") {
+            gsap.to(this.car.rotation, { duration: 0.5, y: this.car.rotation.y + (this._targetRotation / 9) })
+        } else if (direction == "right") {
+            gsap.to(this.car.rotation, { duration: 0.5, y: this.car.rotation.y - (this._targetRotation / 9) })
 
         }
         console.log(this.car.rotation.y)
-
-
     }
 }
+
