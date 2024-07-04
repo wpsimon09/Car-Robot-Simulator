@@ -3,6 +3,7 @@ import * as THREE from 'three'
 export default class PathConstructor{
 
     private _isAllowed = true;
+    private _pathObject: THREE.Line;
 
     private _scene: THREE.Scene;
     private _lineStart: THREE.Vector3;
@@ -22,12 +23,10 @@ export default class PathConstructor{
     public constructor(scene: THREE.Scene){
         this._scene = scene
 
-        const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+        const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
         const points = [new THREE.Vector3(),new THREE.Vector3()];
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         this._tempLine = new THREE.Line(geometry, material);
-
-        const geometry2 = new THREE.BufferGeometry().setFromPoints(points);
         this._finalLine = new THREE.Line(geometry, material);
 
         this._scene.add(this._tempLine);
@@ -41,9 +40,10 @@ export default class PathConstructor{
                 if(this._isFirstLine){
                     this._lineStart = pointOfClick;
                     this._isFirstLine = false;
+                    this._isConstructingLine = true;
                 }  
-                this._points.push(pointOfClick);
                 this._isConstructingLine = false;
+                this._points.push(pointOfClick);
                 
             }else{
                 this._isConstructingLine = true; 
@@ -68,16 +68,33 @@ export default class PathConstructor{
         this._pathOfSimulation = new THREE.CatmullRomCurve3(this._points);
         const pathGeometry = new THREE.BufferGeometry().setFromPoints(this._pathOfSimulation.getPoints(100));
         const pathMaterial = new THREE.LineBasicMaterial({color:0xff0000});
-        const pathObject = new THREE.Line(pathGeometry);
+        this._pathObject = new THREE.Line(pathGeometry);
 
         this._isAllowed = false;
 
         this._scene.remove(this._finalLine);
         this._scene.remove(this._tempLine);
-        this._scene.add(pathObject);
+        this._scene.add(this._pathObject);
     }
 
     public getNumberOfPoints():number{
        return this._points.length;
+    }
+
+    public reset():void{
+        this._isAllowed = true;
+        this._isConstructingLine = false;
+        this._isFirstLine = true;
+        this._points = [];
+        this._scene.remove(this._pathObject);
+
+        const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const points = [new THREE.Vector3(),new THREE.Vector3()];
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        this._tempLine = new THREE.Line(geometry, material);
+        this._finalLine = new THREE.Line(geometry, material);
+
+        this._scene.add(this._tempLine);
+        this._scene.add(this._finalLine);
     }
 }

@@ -6,14 +6,14 @@ export default class Simulation{
     private _numberOfPoints = 0;
     private _path : THREE.CatmullRomCurve3;
     private _meshToSimulate: THREE.Mesh;
+    private _scene: THREE.Scene
 
     public constructor(scene: THREE.Scene,numberOfPoints:number, object :THREE.Mesh, path:THREE.CatmullRomCurve3){
         this._numberOfPoints = numberOfPoints;
         this._meshToSimulate = object;
-
         scene.add(this._meshToSimulate);
         this._path = path;
-
+        this._scene = scene;
         
     }
 
@@ -24,5 +24,9 @@ export default class Simulation{
         
         
         this._meshToSimulate.position.copy(position);
+    }
+
+    public reset(){
+        this._scene.remove(this._meshToSimulate);
     }
 }

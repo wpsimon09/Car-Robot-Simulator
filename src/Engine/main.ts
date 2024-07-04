@@ -25,6 +25,7 @@ export default class Application {
     private _pathConstructor: PathConstructor
 
     private _isValidIntersection = false;
+    private _endButton;
     private _stratButton;
 
     public constructor(_canvas: any) {
@@ -38,22 +39,23 @@ export default class Application {
         this._processMouseMove = this._processMouseMove.bind(this);
         this._processMouseClick = this._processMouseClick.bind(this);
         this._start = this._start.bind(this);
+        this._reset = this._reset.bind(this);
         
         this._pathConstructor = new PathConstructor(this._scene);
-        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start)
+        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start);
+        this._endButton = document.getElementById("stop")?.addEventListener('click', this._reset);
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
-
+        
         this._pathConstructor = new PathConstructor(this._scene);
     }
 
     public init(): void {
         this._setUpLight();
         this._setUpFloor();
-        this._setUpBox();
-        this._camera.position.set(0, 5, 5); // Position the camera above the plane
-        this._camera.lookAt(0, 0, 0); // Look at the center of the plane
+        this._camera.position.set(0, 5, 5); 
+        this._camera.lookAt(0, 0, 0); 
 
         this._controls.target.set(0.0, 2.0, 3.0);
 
@@ -66,12 +68,9 @@ export default class Application {
     }
 
     public update(time): void {
-        this._testObject.rotation.x += 0.01;
-        this._testObject.rotation.y += 0.01;
         if(this._isSimulationRunning){
             this._simulation.simulate(time)
         }
-        this._testObject.position.copy(this._mousePointInWorld);
     }
 
     public getMousePosInWorldSpace(): THREE.Vector3 {
@@ -160,7 +159,7 @@ export default class Application {
 
     private _start(){
         const numOfPoints = this._pathConstructor.getNumberOfPoints();
-        if(numOfPoints > 0){
+        if(numOfPoints > 0 && !this._isSimulationRunning){
             const spehere = new THREE.SphereGeometry(0.2);
             const mat = new THREE.MeshPhysicalMaterial();
             const sphereToSimulate = new THREE.Mesh(spehere, mat);
@@ -170,10 +169,15 @@ export default class Application {
             this._simulation = new Simulation(this._scene,numOfPoints, sphereToSimulate, curveToSimulate);
             this._isSimulationRunning = true;
         }
+        //reset here
         else{
-            console.warn("can not run the simulation");
+            console.log("reset");
+            this._isSimulationRunning = false;
+            this._pathConstructor.reset()        
+            this._simulation.reset();
         }
     }
+
 
    private _setUpBox(){
         const box = new THREE.BoxGeometry(1,1,1);
@@ -181,4 +185,5 @@ export default class Application {
         this._testObject = new THREE.Mesh(box, mat);
         this._scene.add(this._testObject);
     }
+
 }
