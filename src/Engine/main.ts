@@ -2,13 +2,16 @@ import * as THREE from 'three'
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import PathConstructor from './pathContructor';
 import { color } from 'three/examples/jsm/nodes/Nodes.js';
-
+import Simulation from './simulation';
 
 export default class Application {
     private _scene: THREE.Scene;
     private _renderer: THREE.Renderer;
     private _camera: THREE.PerspectiveCamera;
     private _controls: MapControls;
+
+    private _isSimulationRunning = false;
+    private _simulation: Simulation
 
     private _mousePosX = 0;
     private _mousePosY = 0;
@@ -22,6 +25,7 @@ export default class Application {
     private _pathConstructor: PathConstructor
 
     private _isValidIntersection = false;
+    private _stratButton;
 
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
@@ -33,12 +37,15 @@ export default class Application {
 
         this._processMouseMove = this._processMouseMove.bind(this);
         this._processMouseClick = this._processMouseClick.bind(this);
+        this._start = this._start.bind(this);
+        
+        this._pathConstructor = new PathConstructor(this._scene);
+        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start)
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
 
         this._pathConstructor = new PathConstructor(this._scene);
-
     }
 
     public init(): void {
@@ -64,8 +71,9 @@ export default class Application {
     public update(): void {
         this._testObject.rotation.x += 0.01;
         this._testObject.rotation.y += 0.01;
-
-
+        if(this._isSimulationRunning){
+            this.
+        }
         this._testObject.position.copy(this._mousePointInWorld);
     }
 
@@ -155,9 +163,19 @@ export default class Application {
 
     private _setUpBox() {
         const box = new THREE.BoxGeometry(1, 1, 1);
+    }
+
+    private _start(){
+        const curveToSimulate = this._pathConstructor.getCurveToSimulate();
+        const numOfPoints = this._pathConstructor.getNumberOfPoints();
+        this._simulation = new Simulation(this._scene, );
+        this._pathConstructor.constructCurve();
+    }
+
+   private _setUpBox(){
+        const box = new THREE.BoxGeometry(1,1,1);
         const mat = new THREE.MeshPhysicalMaterial();
         this._testObject = new THREE.Mesh(box, mat);
-
         this._scene.add(this._testObject);
     }
 }
