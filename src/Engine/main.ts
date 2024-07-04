@@ -52,7 +52,16 @@ export default class Application {
     }
 
     public update(): void {
+        this._testObject.rotation.x += 0.01;
+        this._testObject.rotation.y += 0.01;
+        const offsetX = this._mousePointInWorld.x - this._testObject.position.x;
+        const offsetY = 1; 
+        const offsetZ = this._mousePointInWorld.z - this._testObject.position.z;
 
+        // Translate the object by the calculated offset
+        this._testObject.translateX(offsetX);
+        this._testObject.translateY(offsetY);
+        this._testObject.translateZ(offsetZ);
     }
 
     public getMousePosInWorldSpace():THREE.Vector3{
@@ -62,7 +71,7 @@ export default class Application {
         const intersections = rayCaster.intersectObject(this._planeOfIntersection,true);
         if (intersections.length > 0) {
             this._mousePointInWorld = intersections[0].point;
-            return intersections[0].point;
+            return new THREE.Vector3(intersections[0].point.x,1.0 ,intersections[0].point.z);
         } else {
             console.warn('No intersection found with the plane.');
             return new THREE.Vector3(); 
