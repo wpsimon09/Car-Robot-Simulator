@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .circle {
+        left: calc(50% - 25px);
+        top: calc(50% - 25px);
+    }
+
+    .circle:nth-child(1) {
+        transform: rotate(45deg) translateX(240px) rotate(-45deg);
+    }
+
+    .circle:nth-child(2) {
+        transform: rotate(90deg) translateX(240px) rotate(-90deg);
+    }
+
+    .circle:nth-child(3) {
+        transform: rotate(135deg) translateX(240px) rotate(-135deg);
+    }
+
+    .circle:nth-child(4) {
+        transform: rotate(180deg) translateX(240px) rotate(-180deg);
+    }
+
+    .circle:nth-child(5) {
+        transform: rotate(225deg) translateX(240px) rotate(-225deg);
+    }
+
+    .circle:nth-child(6) {
+        transform: rotate(270deg) translateX(240px) rotate(-270deg);
+    }
+
+    .circle:nth-child(7) {
+        transform: rotate(315deg) translateX(240px) rotate(-315deg);
+    }
+
+    .circle:nth-child(8) {
+        transform: rotate(360deg) translateX(240px) rotate(-360deg);
+    }
+
+    .circle-sm {
+        left: calc(50% - 17px);
+        top: calc(50% - 30px);
+    }
+
+    .circle-sm:nth-child(1) {
+        transform: rotate(45deg) translateX(155px) rotate(-45deg);
+    }
+
+    .circle-sm:nth-child(2) {
+        transform: rotate(90deg) translateX(155px) rotate(-90deg);
+    }
+
+    .circle-sm:nth-child(3) {
+        transform: rotate(135deg) translateX(155px) rotate(-135deg);
+    }
+
+    .circle-sm:nth-child(4) {
+        transform: rotate(180deg) translateX(155px) rotate(-180deg);
+    }
+
+    .circle-sm:nth-child(5) {
+        transform: rotate(225deg) translateX(155px) rotate(-225deg);
+    }
+
+    .circle-sm:nth-child(6) {
+        transform: rotate(270deg) translateX(155px) rotate(-270deg);
+    }
+
+    .circle-sm:nth-child(7) {
+        transform: rotate(315deg) translateX(155px) rotate(-315deg);
+    }
+
+    .circle-sm:nth-child(8) {
+        transform: rotate(360deg) translateX(155px) rotate(-360deg);
+    }
+
+    
+    .rotate-180-deg{
+        transform: rotateZ(70deg);
+        transition: all 0.3s ease-in-out;
+    }
+    
+
+}
+
