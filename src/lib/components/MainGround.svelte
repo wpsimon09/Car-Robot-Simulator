@@ -16,4 +16,5 @@
     <canvas bind:this={canvas} id="maincanvas" class="h-full w-full"> </canvas>
 
     <button id="start" class="w-40 h-10 rounded-2xl shadow-2xl bg-slate-200 mt-10">Start</button>
+
 </section>

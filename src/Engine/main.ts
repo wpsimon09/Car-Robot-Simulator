@@ -1,12 +1,16 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import PathConstructor from './pathContructor';
+import Simulation from './simulation';
 
 export default class Application {
     private _scene: THREE.Scene;
     private _renderer: THREE.Renderer;
     private _camera: THREE.PerspectiveCamera;
     private _controls: MapControls;
+
+    private _isSimulationRunning = false;
+    private _simulation: Simulation
 
     private _mousePosX = 0;
     private _mousePosY = 0;
@@ -65,8 +69,9 @@ export default class Application {
     public update(): void {
         this._testObject.rotation.x += 0.01;
         this._testObject.rotation.y += 0.01;
-    
-        
+        if(this._isSimulationRunning){
+            this.
+        }
         this._testObject.position.copy(this._mousePointInWorld);
     }
 
@@ -133,14 +138,16 @@ export default class Application {
     }
 
     private _start(){
-        console.log("start");
+        const curveToSimulate = this._pathConstructor.getCurveToSimulate();
+        const numOfPoints = this._pathConstructor.getNumberOfPoints();
+        this._simulation = new Simulation(this._scene, );
+        this._pathConstructor.constructCurve();
     }
 
    private _setUpBox(){
         const box = new THREE.BoxGeometry(1,1,1);
         const mat = new THREE.MeshPhysicalMaterial();
         this._testObject = new THREE.Mesh(box, mat);
-
         this._scene.add(this._testObject);
    }
 }
