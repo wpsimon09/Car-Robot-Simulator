@@ -46,7 +46,6 @@ export default class PathConstructor{
                 
             }else{
                 this._isConstructingLine = true; 
-                console.log("line ended")
                 this._lineStart = pointOfClick;
                 this._points.push(pointOfClick);
                 this._finalLine.geometry = new THREE.BufferGeometry().setFromPoints(this._points);

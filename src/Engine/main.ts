@@ -68,11 +68,11 @@ export default class Application {
         this._renderer.render(this._scene, this._camera);
     }
 
-    public update(): void {
+    public update(time): void {
         this._testObject.rotation.x += 0.01;
         this._testObject.rotation.y += 0.01;
         if(this._isSimulationRunning){
-            this.
+            this._simulation.simulate(time)
         }
         this._testObject.position.copy(this._mousePointInWorld);
     }
@@ -93,9 +93,9 @@ export default class Application {
         }
     }
 
-    private _animate = (): void => {
+    private _animate = (time): void => {
         requestAnimationFrame(this._animate);
-        this.update();
+        this.update(time);
         this.render();
     }
 
@@ -161,15 +161,18 @@ export default class Application {
             this._pathConstructor.processClickEvent(this._mousePointInWorld);
     }
 
-    private _setUpBox() {
-        const box = new THREE.BoxGeometry(1, 1, 1);
-    }
-
     private _start(){
         const curveToSimulate = this._pathConstructor.getCurveToSimulate();
         const numOfPoints = this._pathConstructor.getNumberOfPoints();
-        this._simulation = new Simulation(this._scene, );
-        this._pathConstructor.constructCurve();
+        if(numOfPoints > 0){
+
+            this._simulation = new Simulation(this._scene,numOfPoints,curveToSimulate, this._testObject);
+            this._isSimulationRunning = true;
+            this._pathConstructor.constructCurve();
+        }
+        else{
+            console.warn("can not run the simulation");
+        }
     }
 
    private _setUpBox(){
