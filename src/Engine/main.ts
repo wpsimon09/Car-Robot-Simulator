@@ -29,12 +29,13 @@ export default class Application {
     private _endButton;
     private _stratButton;
     private _meshToSimulate: THREE.Mesh;
+    private _simulationSpeed = 2000;
 
     
 
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
-        this._renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true });
+        this._renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true, alpha :true  });
         this._renderer.setSize(_canvas.clientWidth, _canvas.clientHeight);
 
         this._camera = new THREE.PerspectiveCamera(65, _canvas.clientWidth / _canvas.clientHeight, 0.1, 1000.0);
@@ -78,7 +79,7 @@ export default class Application {
 
     public update(time): void {
         if(this._isSimulationRunning){
-            this._simulation.simulate(time)
+            this._simulation.simulate(time, this._simulationSpeed)
         }
     }
 

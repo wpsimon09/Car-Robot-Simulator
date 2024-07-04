@@ -17,8 +17,7 @@ export default class Simulation{
         scene.add(this._meshToSimulate);
     }
 
-    public simulate(time: number){
-        const simulationSpeed = 2000;
+    public simulate(time: number, simulationSpeed: number){
         const t = ((time / simulationSpeed) % this._numberOfPoints + 1) / (this._numberOfPoints + 1);        
         const position = this._path.getPointAt(t);
         const tangent = this._path.getTangentAt(t).normalize();
