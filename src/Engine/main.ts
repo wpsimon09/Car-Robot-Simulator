@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/addons/controls/MapControls.js';
+import PathConstructor from './pathContructor';
 
 export default class Application {
     private _scene: THREE.Scene;
@@ -16,6 +17,8 @@ export default class Application {
 
     private _testObject: THREE.Mesh;
 
+    private _pathConstructor: PathConstructor
+
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
         this._renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true });
@@ -29,6 +32,9 @@ export default class Application {
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
+
+        this._pathConstructor = new PathConstructor();
+    
     }
 
     public init(): void {
@@ -113,8 +119,7 @@ export default class Application {
 
     private _processMouseClick(event: any): void {
         console.log("click")
-        console.log(this._mousePosX, this._mousePosY);
-        console.log(this.getMousePosInWorldSpace());
+        this._pathConstructor.startLine(this._mousePointInWorld);
     }
 
    private _setUpBox(){
