@@ -24,6 +24,7 @@ export default class PathConstructor{
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         this._tempLine = new THREE.Line(geometry, material);
 
+        const geometry2 = new THREE.BufferGeometry().setFromPoints(points);
         this._finalLine = new THREE.Line(geometry, material);
 
         this._scene.add(this._tempLine);
@@ -36,17 +37,16 @@ export default class PathConstructor{
             if(this._isFirstLine){
                 this._lineStart = pointOfClick;
                 this._isFirstLine = false;
-            }else{
-                this._lineStart = this._points[this._points.length-1];
-            }   
+            }  
             this._points.push(pointOfClick);
-            this._isConstructingLine = false; 
-
+            this._isConstructingLine = false;
+            
         }else{
-            this._isConstructingLine = true;
-            this._finalLine.geometry = new THREE.BufferGeometry().setFromPoints(this._points);
+            this._isConstructingLine = true; 
+            console.log("line ended")
+            this._lineStart = pointOfClick;
             this._points.push(pointOfClick);
-
+            this._finalLine.geometry = new THREE.BufferGeometry().setFromPoints(this._points);
         }   
 
     }
