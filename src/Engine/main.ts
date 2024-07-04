@@ -55,9 +55,6 @@ export default class Application {
         this._camera.position.set(0, 5, 5); // Position the camera above the plane
         this._camera.lookAt(0, 0, 0); // Look at the center of the plane
 
-        this._controls.target.set(0, 0, 0); // Set the target for the controls to the center of the plane
-
-        this._animate();
         this._controls.target.set(0.0, 2.0, 3.0);
 
         this._animate();
@@ -162,13 +159,16 @@ export default class Application {
     }
 
     private _start(){
-        const curveToSimulate = this._pathConstructor.getCurveToSimulate();
         const numOfPoints = this._pathConstructor.getNumberOfPoints();
         if(numOfPoints > 0){
+            const spehere = new THREE.SphereGeometry(0.2);
+            const mat = new THREE.MeshPhysicalMaterial();
+            const sphereToSimulate = new THREE.Mesh(spehere, mat);
 
-            this._simulation = new Simulation(this._scene,numOfPoints,curveToSimulate, this._testObject);
-            this._isSimulationRunning = true;
             this._pathConstructor.constructCurve();
+            const curveToSimulate = this._pathConstructor.getCurveToSimulate();
+            this._simulation = new Simulation(this._scene,numOfPoints, sphereToSimulate, curveToSimulate);
+            this._isSimulationRunning = true;
         }
         else{
             console.warn("can not run the simulation");

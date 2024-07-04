@@ -15,6 +15,7 @@ export default class PathConstructor{
     private _tempLine: THREE.Line;
 
     private _finalLine: THREE.Line;
+    private _pathOfSimulation: THREE.CatmullRomCurve3;
 
     private _curveToSimulate: THREE.Line;
 
@@ -59,13 +60,13 @@ export default class PathConstructor{
                 this._tempLine.geometry = new THREE.BufferGeometry().setFromPoints([this._lineStart, tempEndPoint]);
     }
 
-    public getCurveToSimulate(): THREE.Line{
-        return this._curveToSimulate;
+    public getCurveToSimulate(): THREE.CatmullRomCurve3{
+        return this._pathOfSimulation;
     }
 
     public constructCurve(){
-        const path = new THREE.CatmullRomCurve3(this._points);
-        const pathGeometry = new THREE.BufferGeometry().setFromPoints(path.getPoints(100));
+        this._pathOfSimulation = new THREE.CatmullRomCurve3(this._points);
+        const pathGeometry = new THREE.BufferGeometry().setFromPoints(this._pathOfSimulation.getPoints(100));
         const pathMaterial = new THREE.LineBasicMaterial({color:0xff0000});
         const pathObject = new THREE.Line(pathGeometry);
 
