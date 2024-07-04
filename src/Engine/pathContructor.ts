@@ -12,7 +12,9 @@ export default class PathConstructor{
     private _isConstructingLine = true;
     private _isFirstLine = true;
 
-    private _tempLine: THREE.Line
+    private _tempLine: THREE.Line;
+
+    private _finalLine: THREE.Line;
 
     public constructor(scene: THREE.Scene){
         this._scene = scene
@@ -22,7 +24,10 @@ export default class PathConstructor{
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         this._tempLine = new THREE.Line(geometry, material);
 
+        this._finalLine = new THREE.Line(geometry, material);
+
         this._scene.add(this._tempLine);
+        this._scene.add(this._finalLine);
     }
 
     public processClickEvent(pointOfClick: THREE.Vector3){
@@ -34,12 +39,14 @@ export default class PathConstructor{
             }else{
                 this._lineStart = this._points[this._points.length-1];
             }   
-            this._isConstructingLine = false;
             this._points.push(pointOfClick);
+            this._isConstructingLine = false; 
 
         }else{
             this._isConstructingLine = true;
+            this._finalLine.geometry = new THREE.BufferGeometry().setFromPoints(this._points);
             this._points.push(pointOfClick);
+
         }   
 
     }
