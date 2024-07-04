@@ -185,12 +185,10 @@ export default class Application {
         }
     }
 
-
    private _setUpBox(){
         const box = new THREE.BoxGeometry(1,1,1);
         const mat = new THREE.MeshPhysicalMaterial();
         this._testObject = new THREE.Mesh(box, mat);
         this._scene.add(this._testObject);
     }
-
 }
