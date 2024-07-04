@@ -19,6 +19,8 @@ export default class Application {
 
     private _pathConstructor: PathConstructor
 
+    private _isValidIntersection = false;
+
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
         this._renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true });
@@ -72,8 +74,10 @@ export default class Application {
         const intersections = rayCaster.intersectObject(this._planeOfIntersection,true);
         if (intersections.length > 0) {
             this._mousePointInWorld = intersections[0].point;
+            this._isValidIntersection = true;
             return new THREE.Vector3(intersections[0].point.x,1.0 ,intersections[0].point.z);
         } else {
+            this._isValidIntersection = false;
             console.warn('No intersection found with the plane.');
             return new THREE.Vector3(); 
         }
@@ -119,7 +123,8 @@ export default class Application {
 
     private _processMouseClick(event: any): void {
         console.log("click")
-        this._pathConstructor.startLine(this._mousePointInWorld);
+        if(this._isValidIntersection)
+            this._pathConstructor.processClickEvent(this._mousePointInWorld);
     }
 
    private _setUpBox(){

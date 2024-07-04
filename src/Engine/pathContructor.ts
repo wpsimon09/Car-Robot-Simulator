@@ -2,40 +2,45 @@ import * as THREE from 'three'
 
 
 export default class PathConstructor{
-    private _scene;
-    private _lineStart = undefined;
+    private _lineStart: THREE.Vector3;
 
-    private _points: Array<THREE.Vector3>
+    private _points= new Array<THREE.Vector3>;
 
-    private _isConstructingLine = false;
+    private _isConstructingLine = true;
     private _isFirstLine = true;
+
+    private _tempLine: THREE.Mesh
 
     public constructor(){
         
     }
 
-    public startLine(startPoint: THREE.Vector3){
-        this._isConstructingLine = true;
-        this._points.push(startPoint)
+    public processClickEvent(pointOfClick: THREE.Vector3){
+        if(this._isConstructingLine){
+            console.log("line startd")
+            if(this._isFirstLine){
+                this._lineStart = pointOfClick;
+            }else{
+                this._lineStart = this._points[this._points.length-1];
+            }
+            this._isConstructingLine = false;
+            this._points.push(pointOfClick);
+        }else{
+            console.log("line ended")
+
+            this._isConstructingLine = true;
+            this._points.push(pointOfClick);
+        }
+
+        console.log(this._points)
     }
 
     public endLine(endPoint: THREE.Vector3){
-        this._isConstructingLine = false;
-        this._isFirstLine = false;
-        this._points.push(endPoint);
+    
     }
 
-    public renderLineInProgress(endPointTemp: THREE.Vector3, scene: THREE.Scene){
-        if(this._isConstructingLine){
-            
-            const from = this._points[this._points.length-1];
-            const to = endPointTemp;
-            
-            const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-            const geometry = new THREE.BufferGeometry().setFromPoints( [from, to] );
-            const line = new THREE.Line( geometry, material );
-            scene.add(line);
-        }
+    public renderLineInProgress(){
+
     }
 
 }
