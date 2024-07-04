@@ -1,12 +1,17 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import PathConstructor from './pathContructor';
+import { color } from 'three/examples/jsm/nodes/Nodes.js';
+import Simulation from './simulation';
 
 export default class Application {
     private _scene: THREE.Scene;
     private _renderer: THREE.Renderer;
     private _camera: THREE.PerspectiveCamera;
     private _controls: MapControls;
+
+    private _isSimulationRunning = false;
+    private _simulation: Simulation
 
     private _mousePosX = 0;
     private _mousePosY = 0;
@@ -20,6 +25,7 @@ export default class Application {
     private _pathConstructor: PathConstructor
 
     private _isValidIntersection = false;
+    private _endButton;
     private _stratButton;
 
     public constructor(_canvas: any) {
@@ -33,25 +39,24 @@ export default class Application {
         this._processMouseMove = this._processMouseMove.bind(this);
         this._processMouseClick = this._processMouseClick.bind(this);
         this._start = this._start.bind(this);
+        this._reset = this._reset.bind(this);
         
         this._pathConstructor = new PathConstructor(this._scene);
-        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start)
+        this._stratButton = document.getElementById("start")?.addEventListener('click',this._start);
+        this._endButton = document.getElementById("stop")?.addEventListener('click', this._reset);
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
-
+        
+        this._pathConstructor = new PathConstructor(this._scene);
     }
 
     public init(): void {
         this._setUpLight();
         this._setUpFloor();
-        this._setUpBox();
-        this._camera.position.set(0, 5, 5); // Position the camera above the plane
-        this._camera.lookAt(0, 0, 0); // Look at the center of the plane
+        this._camera.position.set(0, 5, 5); 
+        this._camera.lookAt(0, 0, 0); 
 
-        this._controls.target.set(0, 0, 0); // Set the target for the controls to the center of the plane
-
-        this._animate();
         this._controls.target.set(0.0, 2.0, 3.0);
 
         this._animate();
@@ -62,39 +67,59 @@ export default class Application {
         this._renderer.render(this._scene, this._camera);
     }
 
-    public update(): void {
-        this._testObject.rotation.x += 0.01;
-        this._testObject.rotation.y += 0.01;
-    
-        
-        this._testObject.position.copy(this._mousePointInWorld);
-    }
-
-    public getMousePosInWorldSpace():THREE.Vector3{
-        const rayCaster = new THREE.Raycaster();
-        rayCaster.setFromCamera(new THREE.Vector2(this._mousePosX, this._mousePosY), this._camera);       
-    
-        const intersections = rayCaster.intersectObject(this._planeOfIntersection,true);
-        if (intersections.length > 0) {
-            this._mousePointInWorld = intersections[0].point;
-            this._isValidIntersection = true;
-            return new THREE.Vector3(intersections[0].point.x,1.0 ,intersections[0].point.z);
-        } else {
-            this._isValidIntersection = false;
-            console.warn('No intersection found with the plane.');
-            return new THREE.Vector3(); 
+    public update(time): void {
+        if(this._isSimulationRunning){
+            this._simulation.simulate(time)
         }
     }
 
-    private _animate = (): void => {
+    public getMousePosInWorldSpace(): THREE.Vector3 {
+        const rayCaster = new THREE.Raycaster();
+        rayCaster.setFromCamera(new THREE.Vector2(this._mousePosX, this._mousePosY), this._camera);
+
+        const intersections = rayCaster.intersectObject(this._planeOfIntersection, true);
+        if (intersections.length > 0) {
+            this._mousePointInWorld = intersections[0].point;
+            this._isValidIntersection = true;
+            return new THREE.Vector3(intersections[0].point.x, 1.0, intersections[0].point.z);
+        } else {
+            this._isValidIntersection = false;
+            console.warn('No intersection found with the plane.');
+            return new THREE.Vector3();
+        }
+    }
+
+    private _animate = (time): void => {
         requestAnimationFrame(this._animate);
-        this.update();
+        this.update(time);
         this.render();
     }
 
     private _setUpFloor() {
+
+        const loadingManager = new THREE.LoadingManager();
+
+        const textureLoader = new THREE.TextureLoader(loadingManager);
+
+        const colorTexture = textureLoader.load('/textures/gravel_stones_diff_2k.jpg')
+        const ambientOclusion = textureLoader.load('/textures/gravel_stones_ao_2k.jpg')
+        const normalTexture = textureLoader.load('/textures/gravel_stones_nor_gl_2k.jpg')
+        const roughtTexture = textureLoader.load('/textures/gravel_stones_rough_2k.jpg')
+
+        colorTexture.colorSpace = THREE.SRGBColorSpace;
+        colorTexture.wrapS = THREE.MirroredRepeatWrapping
+        colorTexture.wrapT = THREE.MirroredRepeatWrapping
+        colorTexture.generateMipmaps = false
+        colorTexture.minFilter = THREE.NearestFilter
+        colorTexture.magFilter = THREE.NearestFilter
+
         const geometry = new THREE.PlaneGeometry(10, 10);
-        const material = new THREE.MeshPhysicalMaterial({ color: THREE.Color.NAMES.orange });
+        const material = new THREE.MeshPhysicalMaterial({ map: colorTexture });
+
+        material.aoMap = ambientOclusion;
+        material.roughnessMap = roughtTexture;
+        material.normalMap = normalTexture;
+
         const planeMesh = new THREE.Mesh(geometry, material);
         planeMesh.rotation.x = -Math.PI / 2;
 
@@ -104,7 +129,7 @@ export default class Application {
     }
 
     private _setUpLight() {
-        const ambientLight = new THREE.AmbientLight();
+        const ambientLight = new THREE.AmbientLight(THREE.Color.NAMES.white, 0.7);
         const directionalLight = new THREE.DirectionalLight(THREE.Color.NAMES.white, 3);
         directionalLight.position.set(0, 2, 0);
         this._scene.add(directionalLight);
@@ -122,25 +147,43 @@ export default class Application {
             1;
 
         this.getMousePosInWorldSpace();
-        if(this._isValidIntersection)
+        if (this._isValidIntersection)
             this._pathConstructor.processMouseMove(this._mousePointInWorld);
     }
 
     private _processMouseClick(event: any): void {
         console.log("click")
-        if(this._isValidIntersection)
+        if (this._isValidIntersection)
             this._pathConstructor.processClickEvent(this._mousePointInWorld);
     }
 
     private _start(){
-        console.log("start");
+        const numOfPoints = this._pathConstructor.getNumberOfPoints();
+        if(numOfPoints > 0 && !this._isSimulationRunning){
+            const spehere = new THREE.SphereGeometry(0.2);
+            const mat = new THREE.MeshPhysicalMaterial();
+            const sphereToSimulate = new THREE.Mesh(spehere, mat);
+
+            this._pathConstructor.constructCurve();
+            const curveToSimulate = this._pathConstructor.getCurveToSimulate();
+            this._simulation = new Simulation(this._scene,numOfPoints, sphereToSimulate, curveToSimulate);
+            this._isSimulationRunning = true;
+        }
+        //reset here
+        else{
+            console.log("reset");
+            this._isSimulationRunning = false;
+            this._pathConstructor.reset()        
+            this._simulation.reset();
+        }
     }
+
 
    private _setUpBox(){
         const box = new THREE.BoxGeometry(1,1,1);
         const mat = new THREE.MeshPhysicalMaterial();
         this._testObject = new THREE.Mesh(box, mat);
-
         this._scene.add(this._testObject);
-   }
+    }
+
 }
