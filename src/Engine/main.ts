@@ -35,7 +35,7 @@ export default class Application {
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
 
-        this._pathConstructor = new PathConstructor();
+        this._pathConstructor = new PathConstructor(this._scene);
     
     }
 
@@ -119,6 +119,8 @@ export default class Application {
             1;
 
         this.getMousePosInWorldSpace();
+        if(this._isValidIntersection)
+            this._pathConstructor.processMouseMove(this._mousePointInWorld);
     }
 
     private _processMouseClick(event: any): void {
