@@ -3,6 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import PathConstructor from './pathContructor';
 import { color } from 'three/examples/jsm/nodes/Nodes.js';
 import Simulation from './simulation';
+import { loadModel } from './modelLoader';
 
 export default class Application {
     private _scene: THREE.Scene;
@@ -27,6 +28,9 @@ export default class Application {
     private _isValidIntersection = false;
     private _endButton;
     private _stratButton;
+    private _meshToSimulate: THREE.Mesh;
+
+    
 
     public constructor(_canvas: any) {
         this._scene = new THREE.Scene();
@@ -39,16 +43,21 @@ export default class Application {
         this._processMouseMove = this._processMouseMove.bind(this);
         this._processMouseClick = this._processMouseClick.bind(this);
         this._start = this._start.bind(this);
-        this._reset = this._reset.bind(this);
         
         this._pathConstructor = new PathConstructor(this._scene);
         this._stratButton = document.getElementById("start")?.addEventListener('click',this._start);
-        this._endButton = document.getElementById("stop")?.addEventListener('click', this._reset);
 
         this._renderer.domElement.addEventListener("mousemove", this._processMouseMove);
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
         
         this._pathConstructor = new PathConstructor(this._scene);
+
+
+        loadModel("/models/red_lego_car.glb").then((loadedModel) => {
+            this._meshToSimulate = (loadedModel.scene.children[0] as THREE.Mesh).clone()
+            this._meshToSimulate.scale.set(0.5, 0.5, 0.5);
+         });
+
     }
 
     public init(): void {
@@ -162,14 +171,11 @@ export default class Application {
         if(numOfPoints > 0 && !this._isSimulationRunning){
             const spehere = new THREE.SphereGeometry(0.2);
             const mat = new THREE.MeshPhysicalMaterial();
-            const sphereToSimulate = new THREE.Mesh(spehere, mat);
-
             this._pathConstructor.constructCurve();
             const curveToSimulate = this._pathConstructor.getCurveToSimulate();
-            this._simulation = new Simulation(this._scene,numOfPoints, sphereToSimulate, curveToSimulate);
+            this._simulation = new Simulation(this._scene,numOfPoints, this._meshToSimulate, curveToSimulate);
             this._isSimulationRunning = true;
         }
-        //reset here
         else{
             console.log("reset");
             this._isSimulationRunning = false;
