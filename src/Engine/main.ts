@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import PathConstructor from './pathContructor';
+import { color } from 'three/examples/jsm/nodes/Nodes.js';
+
 
 export default class Application {
     private _scene: THREE.Scene;
@@ -36,7 +38,7 @@ export default class Application {
         this._renderer.domElement.addEventListener("click", this._processMouseClick);
 
         this._pathConstructor = new PathConstructor(this._scene);
-    
+
     }
 
     public init(): void {
@@ -62,24 +64,24 @@ export default class Application {
     public update(): void {
         this._testObject.rotation.x += 0.01;
         this._testObject.rotation.y += 0.01;
-    
-        
+
+
         this._testObject.position.copy(this._mousePointInWorld);
     }
 
-    public getMousePosInWorldSpace():THREE.Vector3{
+    public getMousePosInWorldSpace(): THREE.Vector3 {
         const rayCaster = new THREE.Raycaster();
-        rayCaster.setFromCamera(new THREE.Vector2(this._mousePosX, this._mousePosY), this._camera);       
-    
-        const intersections = rayCaster.intersectObject(this._planeOfIntersection,true);
+        rayCaster.setFromCamera(new THREE.Vector2(this._mousePosX, this._mousePosY), this._camera);
+
+        const intersections = rayCaster.intersectObject(this._planeOfIntersection, true);
         if (intersections.length > 0) {
             this._mousePointInWorld = intersections[0].point;
             this._isValidIntersection = true;
-            return new THREE.Vector3(intersections[0].point.x,1.0 ,intersections[0].point.z);
+            return new THREE.Vector3(intersections[0].point.x, 1.0, intersections[0].point.z);
         } else {
             this._isValidIntersection = false;
             console.warn('No intersection found with the plane.');
-            return new THREE.Vector3(); 
+            return new THREE.Vector3();
         }
     }
 
@@ -90,8 +92,30 @@ export default class Application {
     }
 
     private _setUpFloor() {
+
+        const loadingManager = new THREE.LoadingManager();
+
+        const textureLoader = new THREE.TextureLoader(loadingManager);
+
+        const colorTexture = textureLoader.load('/textures/gravel_stones_diff_2k.jpg')
+        const ambientOclusion = textureLoader.load('/textures/gravel_stones_ao_2k.jpg')
+        const normalTexture = textureLoader.load('/textures/gravel_stones_nor_gl_2k.jpg')
+        const roughtTexture = textureLoader.load('/textures/gravel_stones_rough_2k.jpg')
+
+        colorTexture.colorSpace = THREE.SRGBColorSpace;
+        colorTexture.wrapS = THREE.MirroredRepeatWrapping
+        colorTexture.wrapT = THREE.MirroredRepeatWrapping
+        colorTexture.generateMipmaps = false
+        colorTexture.minFilter = THREE.NearestFilter
+        colorTexture.magFilter = THREE.NearestFilter
+
         const geometry = new THREE.PlaneGeometry(10, 10);
-        const material = new THREE.MeshPhysicalMaterial({ color: THREE.Color.NAMES.orange });
+        const material = new THREE.MeshPhysicalMaterial({ map: colorTexture });
+
+        material.aoMap = ambientOclusion;
+        material.roughnessMap = roughtTexture;
+        material.normalMap = normalTexture;
+
         const planeMesh = new THREE.Mesh(geometry, material);
         planeMesh.rotation.x = -Math.PI / 2;
 
@@ -101,7 +125,7 @@ export default class Application {
     }
 
     private _setUpLight() {
-        const ambientLight = new THREE.AmbientLight();
+        const ambientLight = new THREE.AmbientLight(THREE.Color.NAMES.white, 0.7);
         const directionalLight = new THREE.DirectionalLight(THREE.Color.NAMES.white, 3);
         directionalLight.position.set(0, 2, 0);
         this._scene.add(directionalLight);
@@ -119,21 +143,21 @@ export default class Application {
             1;
 
         this.getMousePosInWorldSpace();
-        if(this._isValidIntersection)
+        if (this._isValidIntersection)
             this._pathConstructor.processMouseMove(this._mousePointInWorld);
     }
 
     private _processMouseClick(event: any): void {
         console.log("click")
-        if(this._isValidIntersection)
+        if (this._isValidIntersection)
             this._pathConstructor.processClickEvent(this._mousePointInWorld);
     }
 
-   private _setUpBox(){
-        const box = new THREE.BoxGeometry(1,1,1);
+    private _setUpBox() {
+        const box = new THREE.BoxGeometry(1, 1, 1);
         const mat = new THREE.MeshPhysicalMaterial();
         this._testObject = new THREE.Mesh(box, mat);
 
         this._scene.add(this._testObject);
-   }
+    }
 }
