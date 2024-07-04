@@ -119,7 +119,7 @@ export default class Car {
         this.car.position.x += dx;
         this.car.position.z -= dz;
     }
-
+// teehee
     private rotate90Degrees(direction: 'left' | 'right') {
         
         if(direction=="left"){
