@@ -2,6 +2,9 @@
     import { onMount } from 'svelte';
     import Application from '../../Engine/main.ts'
     import { Scene } from 'three';
+    import { browser } from '$app/environment';
+    import { scale, slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 
     let canvas;
 
@@ -31,12 +34,15 @@
 
 </script>
 
-<section class="flex w-[90%] h-[90%] flex-col items-center rounded-2xl ">
+<section class="flex w-[80%] h-[80%] flex-col items-center rounded-2xl ">
     <canvas bind:this={canvas} id="maincanvas" class="h-full w-full"> </canvas>
 
     {#if !isStart}
-
+    <dvi class="mt-2" transition:scale={{ duration: 400, delay: 0, opacity: 0.0, start: 0.5, easing: quintOut }} >
         <p class="text-white w-full text-center">Simulation is runnwing for: {elapsedTime} s</p>
+        <p class="text-white mt-1 text-sm">Simulation speed</p>
+        <input name="sim_speed" type="range"/>
+    </dvi>
     {/if}
 
     <div class="flex flex-row itmes-center">
