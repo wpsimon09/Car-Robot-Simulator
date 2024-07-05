@@ -30,7 +30,7 @@
 {#if apiResponse.length > 0}
     <div class="w-full h-full flex flex-col items-center justify-center">
         <h1 class="text-white">Speech: {transcriptionResult}</h1>
-        <a class="w-40 h-20 bg-slate-100 shadow-2xl hover:w-44 hover:h-22 duration-100 rounded-xl" href="/">Draw</a>
+        <a class="speak-btn p-2 w-20 text-zinc-900 shadow-2xl duration-300 rounded-lg text-center " href="/">Draw</a>
         <SpeechGround {apiResponse} />
     </div>
 {:else}
