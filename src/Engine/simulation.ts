@@ -22,7 +22,7 @@ export default class Simulation{
     public simulate(time: number, simulationSpeed: number){
         
         document.getElementById('simulationSpeed')?.addEventListener('change', (event)=>{
-            this._simSpeed = (event.target.value ) *30;
+            this._simSpeed = (event.target.value ) * 16;
         });
 
 
