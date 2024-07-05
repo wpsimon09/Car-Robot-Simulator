@@ -38,4 +38,16 @@
 {/if}
 
 <style>
+    .speak-btn {
+  background: linear-gradient(to right, #e0e0e0 50%, #75c775 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 300ms ease-out;
+
+}
+
+.speak-btn:hover {
+  background-position: left bottom;
+}
+
 </style>
