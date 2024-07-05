@@ -158,7 +158,7 @@ export default class Application {
         directionalLight.shadow.camera.scale.set(2, 2, 2);
         const helper = new THREE.CameraHelper( directionalLight.shadow.camera );
 
-        this._scene.add( helper );  
+        //this._scene.add( helper );  
         this._scene.add(ambientLight);
         this._scene.add(directionalLight);
     }
