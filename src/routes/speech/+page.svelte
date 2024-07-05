@@ -29,7 +29,7 @@
 
 {#if apiResponse.length > 0}
     <div class="w-full h-full flex flex-col items-center justify-center">
-        <a class="speak-btn p-2 w-20 text-zinc-900 shadow-2xl duration-300 rounded-lg text-center " href="/">Draw</a>
+        <a class="speak-btn p-2 w-20 text-zinc-900 shadow-2xl duration-300 rounded-lg text-center " href="">Draw</a>
         <h1 class="text-white">Speech: {transcriptionResult}</h1>
         <SpeechGround {apiResponse} />
     </div>
