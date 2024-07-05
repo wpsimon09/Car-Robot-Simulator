@@ -50,9 +50,9 @@
     <div class="flex flex-row itmes-center">
         <button id="start" on:click={onStartSimulation} class="w-20 h-20  rounded-2xl shadow-2xl hover:w-24 hover:h-24 duration-100 mt-10">
                 {#if isStart}
-                <img src="/icons/play.png" alt="play"/>
+                <img src="icons/play.png" alt="play"/>
                 {:else}
-                <img src="/icons/stop-button.png" alt="play"/>
+                <img src="icons/stop-button.png" alt="play"/>
                 {/if}
         </button>
     </div>

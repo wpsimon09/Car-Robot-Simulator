@@ -59,7 +59,7 @@ export default class Application {
         this._pathConstructor = new PathConstructor(this._scene);
 
 
-        loadModel("/models/red_lego_car.glb").then((loadedModel) => {
+        loadModel("models/red_lego_car.glb").then((loadedModel) => {
             this._meshToSimulate = (loadedModel.scene.children[0] as THREE.Mesh).clone()
             this._meshToSimulate.castShadow = true;
             this._meshToSimulate.receiveShadow = true;
@@ -118,10 +118,10 @@ export default class Application {
 
         const textureLoader = new THREE.TextureLoader(loadingManager);
 
-        const colorTexture = textureLoader.load('/textures/gravel_stones_diff_2k.jpg')
-        const ambientOclusion = textureLoader.load('/textures/gravel_stones_ao_2k.jpg')
-        const normalTexture = textureLoader.load('/textures/gravel_stones_nor_gl_2k.jpg')
-        const roughtTexture = textureLoader.load('/textures/gravel_stones_rough_2k.jpg')
+        const colorTexture = textureLoader.load('textures/gravel_stones_diff_2k.jpg')
+        const ambientOclusion = textureLoader.load('textures/gravel_stones_ao_2k.jpg')
+        const normalTexture = textureLoader.load('textures/gravel_stones_nor_gl_2k.jpg')
+        const roughtTexture = textureLoader.load('textures/gravel_stones_rough_2k.jpg')
 
         colorTexture.colorSpace = THREE.SRGBColorSpace;
         colorTexture.wrapS = THREE.MirroredRepeatWrapping
