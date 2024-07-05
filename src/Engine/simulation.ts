@@ -13,6 +13,7 @@ export default class Simulation{
         this._meshToSimulate = object;
         this._path = path;
         this._scene = scene;
+        this._meshToSimulate.castShadow = true;
         
         scene.add(this._meshToSimulate);
     }

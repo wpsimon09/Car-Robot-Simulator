@@ -23,7 +23,7 @@ export default class PathConstructor{
     public constructor(scene: THREE.Scene){
         this._scene = scene
 
-        const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
         const points = [new THREE.Vector3(),new THREE.Vector3()];
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         this._tempLine = new THREE.Line(geometry, material);
@@ -67,8 +67,9 @@ export default class PathConstructor{
     public constructCurve(){
         this._pathOfSimulation = new THREE.CatmullRomCurve3(this._points);
         const pathGeometry = new THREE.BufferGeometry().setFromPoints(this._pathOfSimulation.getPoints(100));
-        const pathMaterial = new THREE.LineBasicMaterial({color:0xff0000});
-        this._pathObject = new THREE.Line(pathGeometry);
+        const pathMaterial = new THREE.LineBasicMaterial({color:0xFFFFFF});
+        this._pathObject = new THREE.Line(pathGeometry, pathMaterial);
+        this._pathObject.position.copy(new THREE.Vector3(0.4,0.0,0.0))
 
         this._isAllowed = false;
 
