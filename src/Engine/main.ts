@@ -7,7 +7,7 @@ import { loadModel } from './modelLoader';
 
 export default class Application {
     private _scene: THREE.Scene;
-    private _renderer: THREE.Renderer;
+    private _renderer: THREE.WebGLRenderer;
     private _camera: THREE.PerspectiveCamera;
     private _controls: MapControls;
 
@@ -37,6 +37,11 @@ export default class Application {
         this._scene = new THREE.Scene();
         this._renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true, alpha :true  });
         this._renderer.setSize(_canvas.clientWidth, _canvas.clientHeight);
+        
+        //shadow mapping
+        this._renderer.shadowMap.enabled = true;
+        this._renderer.shadowMap.type = THREE.PCFShadowMap;
+
 
         this._camera = new THREE.PerspectiveCamera(65, _canvas.clientWidth / _canvas.clientHeight, 0.1, 1000.0);
         this._controls = new MapControls(this._camera, _canvas);
@@ -56,14 +61,16 @@ export default class Application {
 
         loadModel("/models/red_lego_car.glb").then((loadedModel) => {
             this._meshToSimulate = (loadedModel.scene.children[0] as THREE.Mesh).clone()
+            this._meshToSimulate.castShadow = true;
+            this._meshToSimulate.receiveShadow = true;
             this._meshToSimulate.scale.set(0.5, 0.5, 0.5);
          });
 
     }
 
     public init(): void {
-        this._setUpLight();
         this._setUpFloor();
+        this._setUpLight();
         this._camera.position.set(0, 5, 5); 
         this._camera.lookAt(0, 0, 0); 
 
@@ -124,24 +131,35 @@ export default class Application {
         colorTexture.magFilter = THREE.NearestFilter
 
         const geometry = new THREE.PlaneGeometry(10, 10);
-        const material = new THREE.MeshPhysicalMaterial({ map: colorTexture });
-
-        material.aoMap = ambientOclusion;
-        material.roughnessMap = roughtTexture;
-        material.normalMap = normalTexture;
-
+        const material = new THREE.MeshPhysicalMaterial({ map: colorTexture, roughnessMap: roughtTexture, normalMap:normalTexture, aoMap: ambientOclusion  });
         const planeMesh = new THREE.Mesh(geometry, material);
         planeMesh.rotation.x = -Math.PI / 2;
-
+        planeMesh.receiveShadow = true;
+        planeMesh.castShadow = true;
+        this._planeOfIntersection = planeMesh;
+     
         this._scene.add(planeMesh);
 
-        this._planeOfIntersection = planeMesh;
     }
 
     private _setUpLight() {
-        const ambientLight = new THREE.AmbientLight(THREE.Color.NAMES.white, 0.7);
-        const directionalLight = new THREE.DirectionalLight(THREE.Color.NAMES.white, 3);
-        directionalLight.position.set(0, 2, 0);
+        const ambientLight = new THREE.AmbientLight(THREE.Color.NAMES.white, 0.2)   ;
+        const directionalLight = new THREE.DirectionalLight(THREE.Color.NAMES.white, 4);
+        directionalLight.position.set(12, 10, 0);
+        directionalLight.castShadow = true;
+        
+        directionalLight.shadow.camera.near = 2;
+        directionalLight.shadow.camera.far = 50;
+        directionalLight.shadow.camera.left = -10;
+        directionalLight.shadow.camera.right = 10;
+        directionalLight.shadow.camera.top = 10;
+        directionalLight.shadow.camera.bottom = -10;
+
+        directionalLight.shadow.camera.scale.set(2, 2, 2);
+        const helper = new THREE.CameraHelper( directionalLight.shadow.camera );
+
+        //this._scene.add( helper );  
+        this._scene.add(ambientLight);
         this._scene.add(directionalLight);
     }
 
