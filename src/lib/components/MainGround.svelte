@@ -35,6 +35,8 @@
 </script>
 
 <section class="flex w-[80%] h-[80%] flex-col items-center rounded-2xl ">
+    <a class="speak-btn p-2 w-20 text-zinc-900 shadow-2xl duration-300 rounded-lg text-center " href="/speech">Speak</a>
+
     <canvas bind:this={canvas} id="maincanvas" class="h-full w-full"> </canvas>
 
     {#if !isStart}
@@ -58,3 +60,19 @@
 
 
 </section>
+
+
+<style>
+    .speak-btn {
+  background: linear-gradient(to right, #e0e0e0 50%, #75c775 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 300ms ease-out;
+
+}
+
+.speak-btn:hover {
+  background-position: left bottom;
+}
+
+</style>
