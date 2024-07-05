@@ -7,6 +7,7 @@ export default class Simulation{
     private _path : THREE.CatmullRomCurve3;
     private _meshToSimulate: THREE.Mesh;
     private _scene: THREE.Scene
+    private _simSpeed = 230;
 
     public constructor(scene: THREE.Scene,numberOfPoints:number, object :THREE.Mesh, path:THREE.CatmullRomCurve3){
         this._numberOfPoints = numberOfPoints;
@@ -19,7 +20,15 @@ export default class Simulation{
     }
 
     public simulate(time: number, simulationSpeed: number){
-        const t = ((time / simulationSpeed) % this._numberOfPoints + 1) / (this._numberOfPoints + 1);        
+        
+        document.getElementById('simulationSpeed')?.addEventListener('change', (event)=>{
+            this._simSpeed = (event.target.value ) *30;
+        });
+
+
+        console.log(this._simSpeed)
+    
+        const t = ((time / this._simSpeed) % this._numberOfPoints + 1) / (this._numberOfPoints + 1);        
         const position = this._path.getPointAt(t);
         const tangent = this._path.getTangentAt(t).normalize();
                 

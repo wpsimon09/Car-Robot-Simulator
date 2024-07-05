@@ -43,7 +43,7 @@
     <dvi class="mt-2" transition:scale={{ duration: 400, delay: 0, opacity: 0.0, start: 0.5, easing: quintOut }} >
         <p class="text-white w-full text-center">Simulation is runnwing for: {elapsedTime} s</p>
         <p class="text-white mt-1 text-sm">Simulation speed</p>
-        <input name="sim_speed" type="range"/>
+        <input id="simulationSpeed" name="sim_speed" type="range"/>
     </dvi>
     {/if}
 
@@ -56,9 +56,6 @@
                 {/if}
         </button>
     </div>
-
-
-
 </section>
 
 
