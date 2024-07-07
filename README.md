@@ -18,6 +18,6 @@ Inspiration: To really win over the jury, you should aim for a live demo of your
 
 > Converted to line 
 
-![image](https://github.com/wpsimon09/SpeechToRobotics/assets/95319163/0b89cb71-22d6-47ad-be70-c1bb9fabecce)
+![image](https://github.com/wpsimon09/SpeechToRobotics/assets/95319163/88b597e7-5327-4bae-9eaf-68fbe91d5f49)
 
 If user feels like it we have developed Python script that tarnscribes the user instructions to the instructions that the robot shouuld follow. This does not work on deployement since the python script is not deplyed.
