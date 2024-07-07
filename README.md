@@ -10,3 +10,10 @@ Goal: The challenge for this hackathon is to develop a voice-controlled system f
 "stop". Other goals are to create a digital twin of the car to track its movements. This can be done through a web application or a VR/AR application.
 Preparation: Look into existing voice-controlled robotics solutions to understand their strengths and weaknesses. This could include commercial solutions like voice-controlled drones or open-source projects on platforms like GitHub.
 Inspiration: To really win over the jury, you should aim for a live demo of your solution. Think about how your solution could support multiple languages. This could make your solution more universally applicable and could open up new applications in language learning or international
+
+#Solution
+3D Simulation build in three.js where user can draw a set of lines, which are then connected into one coherent curve. This curve will be followed by the artificial robot
+
+![image](https://github.com/wpsimon09/SpeechToRobotics/assets/95319163/0b89cb71-22d6-47ad-be70-c1bb9fabecce)
+
+If user feels like it we have developed Python script that tarnscribes the user instructions to the instructions that the robot shouuld follow. This does not work on deployement since the python script is not deplyed.
