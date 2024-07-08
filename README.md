@@ -1,5 +1,5 @@
 # SpeechToRobotics
-Hacking By The See hackathon solution 
+Hacking By The Sea hackathon solution 
 
 # Assigment
 Lego Mindstorms is a popular platform for learning about robotics and programming. It allows users to build a variety of robots and control them
